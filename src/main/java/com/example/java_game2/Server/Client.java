@@ -10,12 +10,12 @@ public class Client implements Runnable{
     final SocketWriter socketwriter;
     final Gson gson = new Gson();
     final Model model = ModelBuilder.build();
-    final ClientInfo clientData;
+    final ClientController clientData;
 
     public Client(SocketWriter socketwriter, MainServer mainServer, String playerName)  {
         this.socketwriter = socketwriter;
         this.mainServer = mainServer;
-        clientData = new ClientInfo(playerName);
+        clientData = new ClientController(playerName);
     }
     public String getPlayerName() {
         return clientData.getPlayerName();
@@ -74,7 +74,7 @@ public class Client implements Runnable{
 
         }
     }
-    public ClientInfo getClientData() {
+    public ClientController getClientData() {
         return clientData;
     }
 

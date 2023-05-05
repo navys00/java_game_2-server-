@@ -1,11 +1,11 @@
 package com.example.java_game2.Server;
 
-public class ClientInfo {
+public class ClientController {
     private String playerName;
     private int  arrowsShoot = 0;
     private int pointsEarned = 0;
 
-    public ClientInfo(String playerName) {
+    public ClientController(String playerName) {
         this.playerName = playerName;
     }
 

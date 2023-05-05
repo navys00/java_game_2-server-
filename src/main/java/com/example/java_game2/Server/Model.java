@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Model {
 
     private final ArrayList<IObserver> observerArrayList = new ArrayList<>();
-    private ArrayList<ClientInfo> clientArrayList = new ArrayList<>();
+    private ArrayList<ClientController> clientArrayList = new ArrayList<>();
     private ArrayList<Circles> targetArrayList = new ArrayList<>();
     private ArrayList<Circles> arrowArrayList = new ArrayList<>();
     private final ArrayList<String> readyList = new ArrayList<>();
@@ -112,7 +112,7 @@ public class Model {
                                 for (int i = 0; i < shootingList.size(); i++) {
                                     int finalI = i;
                                     if (shootingList.get(finalI) == null) break;
-                                    ClientInfo client = clientArrayList.stream()
+                                    ClientController client = clientArrayList.stream()
                                             .filter(clientData -> clientData.getPlayerName().equals(shootingList.get(finalI)))
                                             .findFirst()
                                             .orElse(null);
@@ -155,17 +155,17 @@ public class Model {
         arrowArrayList.clear();
         waitingList.clear();
         shootingList.clear();
-        clientArrayList.forEach(ClientInfo::reset);
+        clientArrayList.forEach(ClientController::reset);
         this.init();
     }
 
 
-    private synchronized void shootManager(Circles p, ClientInfo player) {
-        ShootState shootState = targetHitCheck(p);
+    private synchronized void shootManager(Circles p, ClientController player) {
+        ShootStatus shootState = targetHitCheck(p);
         System.out.println(shootState);
-        if (shootState.equals(ShootState.FLYING)) return;
-        if (shootState.equals(ShootState.BIG_SHOT)) player.increasePointsEarned(1);
-        if (shootState.equals(ShootState.SMALL_SHOT)) player.increasePointsEarned(2);
+        if (shootState.equals(ShootStatus.FLYING)) return;
+        if (shootState.equals(ShootStatus.BIG_SHOT)) player.increasePointsEarned(1);
+        if (shootState.equals(ShootStatus.SMALL_SHOT)) player.increasePointsEarned(2);
         p.setX(50);
         if (shootingList.size() == 1) shootingList.clear();
         else {
@@ -186,18 +186,18 @@ public class Model {
         });
     }
 
-    private synchronized ShootState targetHitCheck(Circles p) {
+    private synchronized ShootStatus targetHitCheck(Circles p) {
 
         if (contains(targetArrayList.get(1), p.getX() + p.getR(), p.getY())) {
-            return ShootState.SMALL_SHOT;
+            return ShootStatus.SMALL_SHOT;
         }
         if (contains(targetArrayList.get(0), p.getX() + p.getR(), p.getY())) {
-            return ShootState.BIG_SHOT;
+            return ShootStatus.BIG_SHOT;
         }
         if (p.getX() > 430) {
-            return ShootState.MISSED;
+            return ShootStatus.MISSED;
         }
-        return ShootState.FLYING;
+        return ShootStatus.FLYING;
     }
 
     private boolean contains(Circles c, double x, double y) {
@@ -217,7 +217,7 @@ public class Model {
 
 
 
-    public void addClient(ClientInfo clientData) {
+    public void addClient(ClientController clientData) {
         clientArrayList.add(clientData);
         this.arrowsCountUpdate();
     }
@@ -234,11 +234,11 @@ public class Model {
         observerArrayList.add(o);
     }
 
-    public ArrayList<ClientInfo> getClientArrayList() {
+    public ArrayList<ClientController> getClientArrayList() {
         return clientArrayList;
     }
 
-    public void setClientArrayList(ArrayList<ClientInfo> clientArrayList) {
+    public void setClientArrayList(ArrayList<ClientController> clientArrayList) {
         this.clientArrayList = clientArrayList;
     }
 

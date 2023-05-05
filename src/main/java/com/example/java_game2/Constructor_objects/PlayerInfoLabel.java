@@ -1,14 +1,14 @@
 package com.example.java_game2.Constructor_objects;
 
-import com.example.java_game2.Server.ClientInfo;
+import com.example.java_game2.Server.ClientController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class PlayerInfoBox {
+public class PlayerInfoLabel {
 
-    public static VBox createVbox(ClientInfo cd) {
+    public static VBox createVbox(ClientController cd) {
         VBox vb = new VBox();
         vb.setAlignment(Pos.TOP_CENTER);
         vb.prefWidth(250);

@@ -2,8 +2,8 @@ package com.example.java_game2;
 
 import com.example.java_game2.Constructor_objects.Arrow;
 import com.example.java_game2.Constructor_objects.Circles;
-import com.example.java_game2.Constructor_objects.PlayerInfoBox;
-import com.example.java_game2.Server.ClientInfo;
+import com.example.java_game2.Constructor_objects.PlayerInfoLabel;
+import com.example.java_game2.Server.ClientController;
 import com.example.java_game2.Server.Model;
 import com.example.java_game2.Server.ModelBuilder;
 import com.example.java_game2.Server.ClientActions;
@@ -135,25 +135,25 @@ public class ClientPage implements IObserver {
 
     }
 
-    private void updatePlayersInfo(ArrayList<ClientInfo> a) {
+    private void updatePlayersInfo(ArrayList<ClientController> a) {
         if (a == null || a.size() == 0) return;
         Platform.runLater(() -> {
             for (int i = 0; i < a.size(); i++) {
                 if (i >= players.size()) {
-                    VBox vb = PlayerInfoBox.createVbox(a.get(i));
+                    VBox vb = PlayerInfoLabel.createVbox(a.get(i));
                     playersInfo.add(vb);
                     infoBox.getChildren().add(vb);
                 } else {
-                    PlayerInfoBox.setPlayerName(playersInfo.get(i), a.get(i).getPlayerName());
-                    PlayerInfoBox.setPlayerShots(playersInfo.get(i), a.get(i).getArrowsShoot());
-                    PlayerInfoBox.setPlayerPoints(playersInfo.get(i), a.get(i).getPointsEarned());
+                    PlayerInfoLabel.setPlayerName(playersInfo.get(i), a.get(i).getPlayerName());
+                    PlayerInfoLabel.setPlayerShots(playersInfo.get(i), a.get(i).getArrowsShoot());
+                    PlayerInfoLabel.setPlayerPoints(playersInfo.get(i), a.get(i).getPointsEarned());
                 }
             }
         });
 
     }
 
-    private void updatePlayers(ArrayList<ClientInfo> a) {
+    private void updatePlayers(ArrayList<ClientController> a) {
         if (a == null || a.size() == 0 || players.size() == a.size()) return;
         Platform.runLater(() -> {
             for (int i = 0; i < a.size(); i++) {
