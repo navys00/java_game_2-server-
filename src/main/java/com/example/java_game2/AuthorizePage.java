@@ -91,7 +91,7 @@ public class AuthorizePage {
             Scene scene = new Scene(root1, 750, 520);
             scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
             Stage stage = new Stage();
-            stage.setResizable(false);
+            stage.setResizable(true);
             stage.setTitle("Java Shooter Game.");
             stage.setScene(scene);
             stage.show();

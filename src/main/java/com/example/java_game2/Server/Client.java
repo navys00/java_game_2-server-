@@ -10,12 +10,12 @@ public class Client implements Runnable{
     final SocketWriter socketwriter;
     final Gson gson = new Gson();
     final Model model = ModelBuilder.build();
-    final ClientController clientData;
+    final ClientInfo clientData;
 
     public Client(SocketWriter socketwriter, MainServer mainServer, String playerName)  {
         this.socketwriter = socketwriter;
         this.mainServer = mainServer;
-        clientData = new ClientController(playerName);
+        clientData = new ClientInfo(playerName);
     }
     public String getPlayerName() {
         return clientData.getPlayerName();
@@ -41,8 +41,6 @@ public class Client implements Runnable{
         try {
 
             System.out.println("Client thread " + clientData.getPlayerName() + " started");
-
-            // Broadcast new player added
             model.addClient(clientData);
             mainServer.bcast();
 
@@ -57,7 +55,7 @@ public class Client implements Runnable{
                 if(msg.getClientActions() == ClientActions.READY)
                 {
                     System.out.println("READY " + getPlayerName());
-                    model.ready(mainServer, this.getPlayerName());
+                    model.requestReady(mainServer, this.getPlayerName());
                 }
 
                 if(msg.getClientActions() == ClientActions.STOP)
@@ -74,7 +72,7 @@ public class Client implements Runnable{
 
         }
     }
-    public ClientController getClientData() {
+    public ClientInfo getClientData() {
         return clientData;
     }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Model {
 
     private final ArrayList<IObserver> observerArrayList = new ArrayList<>();
-    private ArrayList<ClientController> clientArrayList = new ArrayList<>();
+    private ArrayList<ClientInfo> clientArrayList = new ArrayList<>();
     private ArrayList<Circles> targetArrayList = new ArrayList<>();
     private ArrayList<Circles> arrowArrayList = new ArrayList<>();
     private final ArrayList<String> readyList = new ArrayList<>();
@@ -24,8 +24,6 @@ public class Model {
             o.update();
         }
     }
-
-    // Usual model data
     public void init() {
         targetArrayList.add(new Circles(330,209, 30));
         targetArrayList.add(new Circles(410,215, 15));
@@ -44,11 +42,19 @@ public class Model {
     }
 
     // Ready state handle
-    public void ready(MainServer mc, String name) {
-        if (readyList.isEmpty()) { readyList.add(name); return;}
+    public void requestReady(MainServer mc, String name) {
+        if (readyList.isEmpty()) {
+            readyList.add(name);
+            return;
+        }
 
-        if (readyList.contains(name)) {readyList.remove(name); }
-        else {readyList.add(name);}
+        if (readyList.contains(name))
+        {
+            readyList.remove(name);
+        }
+        else {
+            readyList.add(name);
+        }
 
         if (clientArrayList.size() > 1 && readyList.size() == clientArrayList.size()) {
             isGameReset = false;
@@ -56,7 +62,7 @@ public class Model {
         }
     }
 
-    // Pause state handle
+
     public void requestPause(String name) {
         if (isGameReset) return;
         if (waitingList.contains(name)) {
@@ -112,14 +118,14 @@ public class Model {
                                 for (int i = 0; i < shootingList.size(); i++) {
                                     int finalI = i;
                                     if (shootingList.get(finalI) == null) break;
-                                    ClientController client = clientArrayList.stream()
+                                    ClientInfo client = clientArrayList.stream()
                                             .filter(clientData -> clientData.getPlayerName().equals(shootingList.get(finalI)))
                                             .findFirst()
                                             .orElse(null);
                                     int index = clientArrayList.indexOf(client);
                                     Circles p = arrowArrayList.get(index);
                                     p.setX(p.getX() + arr_move);
-                                    shootManager(p, client);
+                                    shootController(p, client);
                                 }
 
                         }
@@ -155,17 +161,17 @@ public class Model {
         arrowArrayList.clear();
         waitingList.clear();
         shootingList.clear();
-        clientArrayList.forEach(ClientController::reset);
+        clientArrayList.forEach(ClientInfo::reset);
         this.init();
     }
 
 
-    private synchronized void shootManager(Circles p, ClientController player) {
-        ShootStatus shootState = targetHitCheck(p);
+    private synchronized void shootController(Circles p, ClientInfo player) {
+        ShootState shootState = targetHitCheck(p);
         System.out.println(shootState);
-        if (shootState.equals(ShootStatus.FLYING)) return;
-        if (shootState.equals(ShootStatus.BIG_SHOT)) player.increasePointsEarned(1);
-        if (shootState.equals(ShootStatus.SMALL_SHOT)) player.increasePointsEarned(2);
+        if (shootState.equals(ShootState.FLYING)) return;
+        if (shootState.equals(ShootState.BIG_SHOT)) player.increasePointsEarned(1);
+        if (shootState.equals(ShootState.SMALL_SHOT)) player.increasePointsEarned(2);
         p.setX(50);
         if (shootingList.size() == 1) shootingList.clear();
         else {
@@ -186,18 +192,18 @@ public class Model {
         });
     }
 
-    private synchronized ShootStatus targetHitCheck(Circles p) {
+    private synchronized ShootState targetHitCheck(Circles p) {
 
         if (contains(targetArrayList.get(1), p.getX() + p.getR(), p.getY())) {
-            return ShootStatus.SMALL_SHOT;
+            return ShootState.SMALL_SHOT;
         }
         if (contains(targetArrayList.get(0), p.getX() + p.getR(), p.getY())) {
-            return ShootStatus.BIG_SHOT;
+            return ShootState.BIG_SHOT;
         }
         if (p.getX() > 430) {
-            return ShootStatus.MISSED;
+            return ShootState.MISSED;
         }
-        return ShootStatus.FLYING;
+        return ShootState.FLYING;
     }
 
     private boolean contains(Circles c, double x, double y) {
@@ -217,7 +223,7 @@ public class Model {
 
 
 
-    public void addClient(ClientController clientData) {
+    public void addClient(ClientInfo clientData) {
         clientArrayList.add(clientData);
         this.arrowsCountUpdate();
     }
@@ -234,11 +240,11 @@ public class Model {
         observerArrayList.add(o);
     }
 
-    public ArrayList<ClientController> getClientArrayList() {
+    public ArrayList<ClientInfo> getClientArrayList() {
         return clientArrayList;
     }
 
-    public void setClientArrayList(ArrayList<ClientController> clientArrayList) {
+    public void setClientArrayList(ArrayList<ClientInfo> clientArrayList) {
         this.clientArrayList = clientArrayList;
     }
 
